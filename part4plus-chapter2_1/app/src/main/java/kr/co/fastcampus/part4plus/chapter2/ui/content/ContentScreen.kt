@@ -2,7 +2,15 @@ package kr.co.fastcampus.part4plus.chapter2.ui.content
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
@@ -30,7 +38,7 @@ fun ContentScreen(memoId: Int) {
     Box(Modifier.fillMaxSize()) {
         val scroll = rememberScrollState(0)
         Body(scroll)
-        Title(memo.text, scroll.value)
+        Title(memo.text) { scroll.value }
     }
 }
 
@@ -68,7 +76,7 @@ private fun Body(
 }
 
 @Composable
-private fun Title(memoText: String, scroll: Int) {
+private fun Title(memoText: String, scrollProvider: () -> Int) {
     val maxOffset = with(LocalDensity.current) { MaxTitleOffset.toPx() }
     val minOffset = with(LocalDensity.current) { MinTitleOffset.toPx() }
 
@@ -76,7 +84,7 @@ private fun Title(memoText: String, scroll: Int) {
         modifier = Modifier
             .heightIn(min = MaxTitleOffset)
             .offset {
-                val offset = (maxOffset - scroll).coerceAtLeast(minOffset)
+                val offset = (maxOffset - scrollProvider()).coerceAtLeast(minOffset)
                 IntOffset(x = 0, y = offset.toInt())
             }
             .fillMaxWidth()
